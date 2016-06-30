@@ -20,12 +20,12 @@ manager.
     $evm = new EventManager();
 
 Now we can add some event listeners to the ``$evm``. Let's create a
-``TestEvent`` class to play around with.
+``EventTest`` class to play around with.
 
 .. code-block:: php
 
     <?php
-    class TestEvent
+    class EventTest
     {
         const preFoo = 'preFoo';
         const postFoo = 'postFoo';
@@ -52,15 +52,15 @@ Now we can add some event listeners to the ``$evm``. Let's create a
     }
 
     // Create a new instance
-    $test = new TestEvent($evm);
+    $test = new EventTest($evm);
 
 Events can be dispatched by using the ``dispatchEvent()`` method.
 
 .. code-block:: php
 
     <?php
-    $evm->dispatchEvent(TestEvent::preFoo);
-    $evm->dispatchEvent(TestEvent::postFoo);
+    $evm->dispatchEvent(EventTest::preFoo);
+    $evm->dispatchEvent(EventTest::postFoo);
 
 You can easily remove a listener with the ``removeEventListener()``
 method.
@@ -133,12 +133,13 @@ several reasons:
 -  It is easy to read.
 -  Simplicity.
 -  Each method within an EventSubscriber is named after the
-   corresponding constant's value. If the constant's name and value differ
-   it contradicts the intention of using the constant and makes your code
-   harder to maintain.
+   corresponding constant. If constant name and constant value differ,
+   you MUST use the new value and thus, your code might be subject to
+   codechanges when the value changes. This contradicts the intention
+   of a constant.
 
 An example for a correct notation can be found in the example
-``TestEvent`` above.
+``EventTest`` above.
 
 .. _reference-events-lifecycle-events:
 
@@ -158,7 +159,7 @@ the life-time of their registered entities.
 -  prePersist - The prePersist event occurs for a given entity
    before the respective EntityManager persist operation for that
    entity is executed. It should be noted that this event is only triggered on
-   *initial* persist of an entity (i.e. it does not trigger on future updates).
+   *initial* persist of an entity
 -  postPersist - The postPersist event occurs for an entity after
    the entity has been made persistent. It will be invoked after the
    database insert operations. Generated primary key values are
@@ -172,11 +173,7 @@ the life-time of their registered entities.
    database or after the refresh operation has been applied to it.
 -  loadClassMetadata - The loadClassMetadata event occurs after the
    mapping metadata for a class has been loaded from a mapping source
-   (annotations/xml/yaml). This event is not a lifecycle callback.
--  onClassMetadataNotFound - Loading class metadata for a particular
-   requested class name failed. Manipulating the given event args instance
-   allows providing fallback metadata even when no actual metadata exists
-   or could be found. This event is not a lifecycle callback.
+   (annotations/xml/yaml).
 -  preFlush - The preFlush event occurs at the very beginning of a flush
    operation. This event is not a lifecycle callback.
 -  onFlush - The onFlush event occurs after the change-sets of all
@@ -186,22 +183,15 @@ the life-time of their registered entities.
    event is not a lifecycle callback.
 -  onClear - The onClear event occurs when the EntityManager#clear() operation is
    invoked, after all references to entities have been removed from the unit of
-   work. This event is not a lifecycle callback.
+   work.
 
 .. warning::
 
-    Note that, when using ``Doctrine\ORM\AbstractQuery#iterate()``, ``postLoad``
-    events will be executed immediately after objects are being hydrated, and therefore
-    associations are not guaranteed to be initialized. It is not safe to combine
-    usage of ``Doctrine\ORM\AbstractQuery#iterate()`` and ``postLoad`` event
-    handlers.
+    Note that the postLoad event occurs for an entity
+    before any associations have been initialized. Therefore it is not
+    safe to access associations in a postLoad callback or event
+    handler.
 
-.. warning::
-
-    Note that the postRemove event or any events triggered after an entity removal
-    can receive an uninitializable proxy in case you have configured an entity to
-    cascade remove relations. In this case, you should load yourself the proxy in
-    the associated pre event.
 
 You can access the Event constants from the ``Events`` class in the
 ORM package.
@@ -214,6 +204,7 @@ ORM package.
 
 These can be hooked into by two different types of event
 listeners:
+
 
 -  Lifecycle Callbacks are methods on the entity classes that are
    called when the event is triggered. As of v2.4 they receive some kind
@@ -306,7 +297,7 @@ can do it with the following.
         name:
           type: string(50)
       lifecycleCallbacks:
-        prePersist: [ doStuffOnPrePersist, doOtherStuffOnPrePersist ]
+        prePersist: [ doStuffOnPrePersist, doOtherStuffOnPrePersistToo ]
         postPersist: [ doStuffOnPostPersist ]
 
 In YAML the ``key`` of the lifecycleCallbacks entry is the event that you
@@ -358,17 +349,15 @@ defined on your ``User`` model.
             // ...
         }
 
-        public function doOtherStuffOnPrePersist()
-        {
-            // ...
-        }
-
         public function doStuffOnPostPersist()
         {
             // ...
         }
     }
 
+The ``key`` of the lifecycleCallbacks is the name of the method and
+the value is the event type. The allowed event types are the ones
+listed in the previous Lifecycle Events section.
 
 Lifecycle Callbacks Event Argument
 -----------------------------------
@@ -593,23 +582,23 @@ mentioned sets. See this example:
             $em = $eventArgs->getEntityManager();
             $uow = $em->getUnitOfWork();
 
-            foreach ($uow->getScheduledEntityInsertions() as $entity) {
+            foreach ($uow->getScheduledEntityInsertions() AS $entity) {
 
             }
 
-            foreach ($uow->getScheduledEntityUpdates() as $entity) {
+            foreach ($uow->getScheduledEntityUpdates() AS $entity) {
 
             }
 
-            foreach ($uow->getScheduledEntityDeletions() as $entity) {
+            foreach ($uow->getScheduledEntityDeletions() AS $entity) {
 
             }
 
-            foreach ($uow->getScheduledCollectionDeletions() as $col) {
+            foreach ($uow->getScheduledCollectionDeletions() AS $col) {
 
             }
 
-            foreach ($uow->getScheduledCollectionUpdates() as $col) {
+            foreach ($uow->getScheduledCollectionUpdates() AS $col) {
 
             }
         }
@@ -618,13 +607,13 @@ mentioned sets. See this example:
 The following restrictions apply to the onFlush event:
 
 
--  If you create and persist a new entity in ``onFlush``, then
+-  If you create and persist a new entity in "onFlush", then
    calling ``EntityManager#persist()`` is not enough.
    You have to execute an additional call to
    ``$unitOfWork->computeChangeSet($classMetadata, $entity)``.
 -  Changing primitive fields or associations requires you to
    explicitly trigger a re-computation of the changeset of the
-   affected entity. This can be done by calling
+   affected entity. This can be done by either calling
    ``$unitOfWork->recomputeSingleEntityChangeSet($classMetadata, $entity)``.
 
 postFlush
@@ -751,9 +740,9 @@ Entity listeners
 
 .. versionadded:: 2.4
 
-An entity listener is a lifecycle listener class used for an entity.
+An entity listeners is a lifecycle listener classes used for an entity.
 
-- The entity listener's mapping may be applied to an entity class or mapped superclass.
+- The entity listeners mapping may be applied to an entity class or mapped superclass.
 - An entity listener is defined by mapping the entity class with the corresponding mapping.
 
 .. configuration-block::
@@ -811,8 +800,8 @@ An ``Entity Listener`` could be any class, by default it should be a class with 
         }
     }
 
-To define a specific event listener method (one that does not follow the naming convention)
-you need to map the listener method using the event type mapping:
+To define a specific event listener method
+you should map the listener method using the event type mapping.
 
 .. configuration-block::
 
@@ -890,9 +879,9 @@ you need to map the listener method using the event type mapping:
 
 Entity listeners resolver
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
-Doctrine invokes the listener resolver to get the listener instance.
+Doctrine invoke the listener resolver to get the listener instance.
 
-- A resolver allows you register a specific entity listener instance.
+- An resolver allows you register a specific ``Entity Listener`` instance.
 - You can also implement your own resolver by extending ``Doctrine\ORM\Mapping\DefaultEntityListenerResolver`` or implementing ``Doctrine\ORM\Mapping\EntityListenerResolver``
 
 Specifying an entity listener instance :
@@ -947,9 +936,8 @@ Implementing your own resolver :
         }
     }
 
-    // Configure the listener resolver only before instantiating the EntityManager
-    $configurations->setEntityListenerResolver(new MyEntityListenerResolver);
-    EntityManager::create(.., $configurations, ..);
+    // configure the listener resolver.
+    $em->getConfiguration()->setEntityListenerResolver($container->get('my_resolver'));
 
 Load ClassMetadata Event
 ------------------------
@@ -961,12 +949,12 @@ process and manipulate the instance.
 .. code-block:: php
 
     <?php
-    $test = new TestEvent();
+    $test = new EventTest();
     $metadataFactory = $em->getMetadataFactory();
     $evm = $em->getEventManager();
     $evm->addEventListener(Events::loadClassMetadata, $test);
 
-    class TestEvent
+    class EventTest
     {
         public function loadClassMetadata(\Doctrine\ORM\Event\LoadClassMetadataEventArgs $eventArgs)
         {

@@ -19,6 +19,7 @@
 
 namespace Doctrine\ORM\Mapping;
 
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 
 /**
@@ -91,6 +92,6 @@ class AnsiQuoteStrategy implements QuoteStrategy
      */
     public function getColumnAlias($columnName, $counter, AbstractPlatform $platform, ClassMetadata $class = null)
     {
-        return $platform->getSQLResultCasing($columnName . '_' . $counter);
+        return $platform->getSQLResultCasing($columnName . $counter);
     }
 }

@@ -21,12 +21,12 @@ namespace Doctrine\ORM\Tools\Event;
 
 use Doctrine\Common\EventArgs;
 use Doctrine\DBAL\Schema\Schema;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Event Args used for the Events::postGenerateSchema event.
  *
- * @license     http://www.opensource.org/licenses/mit-license.php MIT
+ * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        www.doctrine-project.com
  * @since       1.0
  * @author      Benjamin Eberlei <kontakt@beberlei.de>
@@ -34,7 +34,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class GenerateSchemaEventArgs extends EventArgs
 {
     /**
-     * @var \Doctrine\ORM\EntityManagerInterface
+     * @var \Doctrine\ORM\EntityManager
      */
     private $em;
 
@@ -44,17 +44,17 @@ class GenerateSchemaEventArgs extends EventArgs
     private $schema;
 
     /**
-     * @param EntityManagerInterface $em
-     * @param Schema                 $schema
+     * @param EntityManager $em
+     * @param Schema        $schema
      */
-    public function __construct(EntityManagerInterface $em, Schema $schema)
+    public function __construct(EntityManager $em, Schema $schema)
     {
         $this->em = $em;
         $this->schema = $schema;
     }
 
     /**
-     * @return EntityManagerInterface
+     * @return EntityManager
      */
     public function getEntityManager()
     {

@@ -392,7 +392,7 @@ class DatabaseDriver implements MappingDriver
         $fieldMapping = array(
             'fieldName'  => $this->getFieldNameForColumn($tableName, $column->getName(), false),
             'columnName' => $column->getName(),
-            'type'       => $column->getType()->getName(),
+            'type'       => strtolower((string) $column->getType()),
             'nullable'   => ( ! $column->getNotNull()),
         );
 
@@ -407,7 +407,7 @@ class DatabaseDriver implements MappingDriver
             case Type::STRING:
             case Type::TEXT:
                 $fieldMapping['length'] = $column->getLength();
-                $fieldMapping['options']['fixed']  = $column->getFixed();
+                $fieldMapping['fixed']  = $column->getFixed();
                 break;
 
             case Type::DECIMAL:
@@ -419,18 +419,18 @@ class DatabaseDriver implements MappingDriver
             case Type::INTEGER:
             case Type::BIGINT:
             case Type::SMALLINT:
-                $fieldMapping['options']['unsigned'] = $column->getUnsigned();
+                $fieldMapping['unsigned'] = $column->getUnsigned();
                 break;
         }
 
         // Comment
         if (($comment = $column->getComment()) !== null) {
-            $fieldMapping['options']['comment'] = $comment;
+            $fieldMapping['comment'] = $comment;
         }
 
         // Default
         if (($default = $column->getDefault()) !== null) {
-            $fieldMapping['options']['default'] = $default;
+            $fieldMapping['default'] = $default;
         }
 
         return $fieldMapping;

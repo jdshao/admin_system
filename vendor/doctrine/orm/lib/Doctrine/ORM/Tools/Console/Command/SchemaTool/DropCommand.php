@@ -19,6 +19,7 @@
 
 namespace Doctrine\ORM\Tools\Console\Command\SchemaTool;
 
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -49,10 +50,10 @@ class DropCommand extends AbstractCommand
         ->setDefinition(array(
             new InputOption(
                 'dump-sql', null, InputOption::VALUE_NONE,
-                'Instead of trying to apply generated SQLs into EntityManager Storage Connection, output them.'
+                'Instead of try to apply generated SQLs into EntityManager Storage Connection, output them.'
             ),
             new InputOption(
-                'force', 'f', InputOption::VALUE_NONE,
+                'force', null, InputOption::VALUE_NONE,
                 "Don't ask for the deletion of the database, but force the operation to run."
             ),
             new InputOption(
@@ -105,7 +106,7 @@ EOT
             return 0;
         }
 
-        $output->writeln('<comment>ATTENTION</comment>: This operation should not be executed in a production environment.' . PHP_EOL);
+        $output->writeln('ATTENTION: This operation should not be executed in a production environment.' . PHP_EOL);
 
         if ($isFullDatabaseDrop) {
             $sqls = $schemaTool->getDropDatabaseSQL();
@@ -114,11 +115,8 @@ EOT
         }
 
         if (count($sqls)) {
-            $output->writeln(sprintf('The Schema-Tool would execute <info>"%s"</info> queries to update the database.', count($sqls)));
-            $output->writeln('Please run the operation by passing one - or both - of the following options:');
-
-            $output->writeln(sprintf('    <info>%s --force</info> to execute the command', $this->getName()));
-            $output->writeln(sprintf('    <info>%s --dump-sql</info> to dump the SQL statements to the screen', $this->getName()));
+            $output->writeln('Schema-Tool would execute ' . count($sqls) . ' queries to drop the database.');
+            $output->writeln('Please run the operation with --force to execute these queries or use --dump-sql to see them.');
 
             return 1;
         }

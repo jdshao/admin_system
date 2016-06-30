@@ -8,9 +8,11 @@ define("ROUTER", BASE_PATH.'/router/');
 // 第三方路径
 define("Common", BASE_PATH.'/common/');
 // 通用类配置
-define("LIBRARY", BASE_PATH.'/library/');
+define("LIBRARY", BASE_PATH.'/library');
 // 控制器空间
 define("Controller", BASE_PATH.'/controller');
+// 数据访问层
+define("Model", BASE_PATH.'/model');
 
 // composer autoload自动载入类
 require BASE_PATH.'/vendor/autoload.php';
@@ -25,18 +27,9 @@ $context = new \Symfony\Component\Routing\RequestContext('/');
 $matcher = new \Symfony\Component\Routing\Matcher\UrlMatcher($collection, $context);
 $request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
 $reqURI = $request->getRequestUri();
-// 相对于测试环境的处理，真实环境会定位到工程根目录
-$reqURI = str_replace('php_infinite_classing/', '', $reqURI);
 
 // 加载控制器装载类
-require LIBRARY . 'Loader.php';
-
-$dirArr = explode('/', $reqURI);
-$directory = $dirArr[1];
-if (in_array($directory, array('common', 'images'))) {
-    return ;
-}
-
+require LIBRARY . '/' . 'Loader.php';
 try {
     $routeInfo = $matcher->match($reqURI);
     $controller = $routeInfo['controller'];

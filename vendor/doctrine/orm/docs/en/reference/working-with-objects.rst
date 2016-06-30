@@ -103,8 +103,7 @@ from newly opened EntityManager.
         /** @OneToMany(targetEntity="Comment", mappedBy="article") */
         private $comments;
     
-        public function __construct()
-        {
+        public function __construct {
             $this->comments = new ArrayCollection();
         }
     
@@ -115,7 +114,7 @@ from newly opened EntityManager.
     $article = $em->find('Article', 1);
 
 This code only retrieves the ``Article`` instance with id 1 executing
-a single SELECT statement against the articles table in the database.
+a single SELECT statement against the user table in the database.
 You can still access the associated properties author and comments
 and the associated objects they contain.
 
@@ -144,7 +143,7 @@ your code. See the following code:
     // accessing the comments as an iterator triggers the lazy-load
     // retrieving ALL the comments of this article from the database
     // using a single SELECT statement
-    foreach ($article->getComments() as $comment) {
+    foreach ($article->getComments() AS $comment) {
         echo $comment->getText() . "\n\n";
     }
     
@@ -821,10 +820,9 @@ in a central location.
     namespace MyDomain\Model;
     
     use Doctrine\ORM\EntityRepository;
-    use Doctrine\ORM\Mapping as ORM;
     
     /**
-     * @ORM\Entity(repositoryClass="MyDomain\Model\UserRepository")
+     * @entity(repositoryClass="MyDomain\Model\UserRepository")
      */
     class User
     {

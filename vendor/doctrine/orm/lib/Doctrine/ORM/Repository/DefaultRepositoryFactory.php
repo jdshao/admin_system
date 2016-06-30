@@ -27,12 +27,12 @@ use Doctrine\ORM\EntityManagerInterface;
  * @author Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @since 2.4
  */
-final class DefaultRepositoryFactory implements RepositoryFactory
+class DefaultRepositoryFactory implements RepositoryFactory
 {
     /**
      * The list of EntityRepository instances.
      *
-     * @var \Doctrine\Common\Persistence\ObjectRepository[]
+     * @var array<\Doctrine\Common\Persistence\ObjectRepository>
      */
     private $repositoryList = array();
 
@@ -41,13 +41,17 @@ final class DefaultRepositoryFactory implements RepositoryFactory
      */
     public function getRepository(EntityManagerInterface $entityManager, $entityName)
     {
-        $repositoryHash = $entityManager->getClassMetadata($entityName)->getName() . spl_object_hash($entityManager);
+        $entityName = ltrim($entityName, '\\');
 
-        if (isset($this->repositoryList[$repositoryHash])) {
-            return $this->repositoryList[$repositoryHash];
+        if (isset($this->repositoryList[$entityName])) {
+            return $this->repositoryList[$entityName];
         }
 
-        return $this->repositoryList[$repositoryHash] = $this->createRepository($entityManager, $entityName);
+        $repository = $this->createRepository($entityManager, $entityName);
+
+        $this->repositoryList[$entityName] = $repository;
+
+        return $repository;
     }
 
     /**
@@ -58,12 +62,15 @@ final class DefaultRepositoryFactory implements RepositoryFactory
      *
      * @return \Doctrine\Common\Persistence\ObjectRepository
      */
-    private function createRepository(EntityManagerInterface $entityManager, $entityName)
+    protected function createRepository(EntityManagerInterface $entityManager, $entityName)
     {
-        /* @var $metadata \Doctrine\ORM\Mapping\ClassMetadata */
         $metadata            = $entityManager->getClassMetadata($entityName);
-        $repositoryClassName = $metadata->customRepositoryClassName
-            ?: $entityManager->getConfiguration()->getDefaultRepositoryClassName();
+        $repositoryClassName = $metadata->customRepositoryClassName;
+
+        if ($repositoryClassName === null) {
+            $configuration       = $entityManager->getConfiguration();
+            $repositoryClassName = $configuration->getDefaultRepositoryClassName();
+        }
 
         return new $repositoryClassName($entityManager, $metadata);
     }

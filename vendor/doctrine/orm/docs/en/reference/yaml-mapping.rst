@@ -72,10 +72,7 @@ of several common elements:
     # Doctrine.Tests.ORM.Mapping.User.dcm.yml
     Doctrine\Tests\ORM\Mapping\User:
       type: entity
-      repositoryClass: Doctrine\Tests\ORM\Mapping\UserRepository
       table: cms_users
-      schema: schema_name # The schema the table lies in, for platforms that support schemas (Optional, >= 2.5)
-      readOnly: true
       indexes:
         name_index:
           columns: [ name ]
@@ -88,28 +85,12 @@ of several common elements:
         name:
           type: string
           length: 50
-        email:
-          type: string
-          length: 32
-          column: user_email
-          unique: true
-          options:
-            fixed: true
-            comment: User's email address
-        loginCount:
-          type: integer
-          column: login_count
-          nullable: false
-          options:
-            unsigned: true
-            default: 0
       oneToOne:
         address:
           targetEntity: Address
           joinColumn:
             name: address_id
             referencedColumnName: id
-            onDelete: CASCADE
       oneToMany:
         phonenumbers:
           targetEntity: Phonenumber
@@ -133,22 +114,4 @@ of several common elements:
 Be aware that class-names specified in the YAML files should be
 fully qualified.
 
-Reference
-~~~~~~~~~~~~~~~~~~~~~~
-
-Unique Constraints
-------------------
-
-It is possible to define unique constraints by the following declaration:
-
-.. code-block:: yaml
-
-    # ECommerceProduct.orm.yml
-    ECommerceProduct:
-      type: entity
-      fields:
-        # definition of some fields
-      uniqueConstraints:
-        search_idx:
-          columns: [ name, email ]
 

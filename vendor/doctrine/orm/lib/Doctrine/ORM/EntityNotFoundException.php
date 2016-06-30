@@ -28,24 +28,10 @@ namespace Doctrine\ORM;
 class EntityNotFoundException extends ORMException
 {
     /**
-     * Static constructor.
-     *
-     * @param string   $className
-     * @param string[] $id
-     *
-     * @return self
+     * Constructor.
      */
-    public static function fromClassNameAndIdentifier($className, array $id)
+    public function __construct()
     {
-        $ids = array();
-
-        foreach ($id as $key => $value) {
-            $ids[] = $key . '(' . $value . ')';
-        }
-
-
-        return new self(
-            'Entity of type \'' . $className . '\'' . ($ids ? ' for IDs ' . implode(', ', $ids) : '') . ' was not found'
-        );
+        parent::__construct('Entity was not found.');
     }
 }

@@ -78,7 +78,7 @@ a "naming standard" for database tables and columns.
      * @param string $propertyName A property
      * @return string A join column name
      */
-    function joinColumnName($propertyName, $className = null);
+    function joinColumnName($propertyName);
 
     /**
      * Return a join table name
@@ -124,7 +124,7 @@ You need to implements NamingStrategy first. Following is an example
         {
             return 'id';
         }
-        public function joinColumnName($propertyName, $className = null)
+        public function joinColumnName($propertyName)
         {
             return $propertyName . '_' . $this->referenceColumnName();
         }

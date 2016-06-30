@@ -38,7 +38,7 @@ is allowed to:
             $orderLimit = $this->customer->getOrderLimit();
     
             $amount = 0;
-            foreach ($this->orderLines as $line) {
+            foreach ($this->orderLines AS $line) {
                 $amount += $line->getAmount();
             }
     

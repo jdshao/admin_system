@@ -11,7 +11,9 @@ function Loader($className)
     if (strpos($className, 'Controller')) {
         require_once (Controller. '/' . $className . '.php');
     } else if (strpos($className, 'Library')) {
-      require_once (LIBRARY. '/' . $className . '.php');
+        require_once (LIBRARY. '/' . $className . '.php');
+    } else if (strpos($className, 'Model')) {
+        require_once (Model. '/' . $className . '.php');
     }
 }
 

@@ -19,6 +19,7 @@
 
 namespace Doctrine\ORM\Event;
 
+use Doctrine\ORM\EntityManager;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs as BaseLifecycleEventArgs;
 
 /**

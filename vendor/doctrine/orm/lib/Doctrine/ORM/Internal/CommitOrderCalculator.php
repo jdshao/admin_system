@@ -62,7 +62,7 @@ class CommitOrderCalculator
      */
     public function clear()
     {
-        $this->_classes = array();
+        $this->_classes =
         $this->_relatedClasses = array();
     }
 

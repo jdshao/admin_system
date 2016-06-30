@@ -20,11 +20,11 @@
 namespace Doctrine\ORM\Tools;
 
 use Doctrine\Common\Persistence\Proxy;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\UnitOfWork;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Use this logger to dump the identity map during the onFlush event. This is useful for debugging
@@ -69,11 +69,11 @@ class DebugUnitOfWorkListener
     /**
      * Dumps the contents of the identity map into a stream.
      *
-     * @param EntityManagerInterface $em
+     * @param EntityManager $em
      *
      * @return void
      */
-    public function dumpIdentityMap(EntityManagerInterface $em)
+    public function dumpIdentityMap(EntityManager $em)
     {
         $uow = $em->getUnitOfWork();
         $identityMap = $uow->getIdentityMap();

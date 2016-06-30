@@ -19,7 +19,8 @@
 
 namespace Doctrine\ORM\Query;
 
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Configuration;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Collection class for all the query filters.
@@ -57,7 +58,7 @@ class FilterCollection
     /**
      * Instances of enabled filters.
      *
-     * @var \Doctrine\ORM\Query\Filter\SQLFilter[]
+     * @var array
      */
     private $enabledFilters = array();
 
@@ -74,9 +75,9 @@ class FilterCollection
     /**
      * Constructor.
      *
-     * @param EntityManagerInterface $em
+     * @param EntityManager $em
      */
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManager $em)
     {
         $this->em = $em;
         $this->config = $em->getConfiguration();
@@ -85,7 +86,7 @@ class FilterCollection
     /**
      * Gets all the enabled filters.
      *
-     * @return \Doctrine\ORM\Query\Filter\SQLFilter[] The enabled filters.
+     * @return array The enabled filters.
      */
     public function getEnabledFilters()
     {
@@ -103,13 +104,11 @@ class FilterCollection
      */
     public function enable($name)
     {
-        if ( ! $this->has($name)) {
+        if (null === $filterClass = $this->config->getFilterClassName($name)) {
             throw new \InvalidArgumentException("Filter '" . $name . "' does not exist.");
         }
 
-        if ( ! $this->isEnabled($name)) {
-            $filterClass = $this->config->getFilterClassName($name);
-
+        if (!isset($this->enabledFilters[$name])) {
             $this->enabledFilters[$name] = new $filterClass($this->em);
 
             // Keep the enabled filters sorted for the hash
@@ -155,23 +154,11 @@ class FilterCollection
      */
     public function getFilter($name)
     {
-        if ( ! $this->isEnabled($name)) {
+        if (!isset($this->enabledFilters[$name])) {
             throw new \InvalidArgumentException("Filter '" . $name . "' is not enabled.");
         }
 
         return $this->enabledFilters[$name];
-    }
-
-    /**
-     * Checks whether filter with given name is defined.
-     *
-     * @param string $name Name of the filter.
-     *
-     * @return bool true if the filter exists, false if not.
-     */
-    public function has($name)
-    {
-        return null !== $this->config->getFilterClassName($name);
     }
 
     /**
@@ -207,7 +194,6 @@ class FilterCollection
         }
 
         $filterHash = '';
-
         foreach ($this->enabledFilters as $name => $filter) {
             $filterHash .= $name . $filter;
         }

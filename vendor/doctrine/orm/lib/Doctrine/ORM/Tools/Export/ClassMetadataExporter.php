@@ -19,6 +19,8 @@
 
 namespace Doctrine\ORM\Tools\Export;
 
+use Doctrine\ORM\Tools\Export\ExportException;
+
 /**
  * Class used for converting your mapping information between the
  * supported formats: yaml, xml, and php/annotation.

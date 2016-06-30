@@ -73,8 +73,6 @@ EOT
         $metadatas = $em->getMetadataFactory()->getAllMetadata();
         $metadatas = MetadataFilter::filter($metadatas, $input->getOption('filter'));
 
-        $repositoryName = $em->getConfiguration()->getDefaultRepositoryClassName();
-
         // Process destination directory
         $destPath = realpath($input->getArgument('dest-path'));
 
@@ -93,8 +91,6 @@ EOT
         if (count($metadatas)) {
             $numRepositories = 0;
             $generator = new EntityRepositoryGenerator();
-
-            $generator->setDefaultRepositoryName($repositoryName);
 
             foreach ($metadatas as $metadata) {
                 if ($metadata->customRepositoryClassName) {

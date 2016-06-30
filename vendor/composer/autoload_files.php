@@ -7,5 +7,4 @@ $baseDir = dirname($vendorDir);
 
 return array(
     $vendorDir . '/symfony/polyfill-mbstring/bootstrap.php',
-    $vendorDir . '/kdyby/events/src/Doctrine/compatibility.php',
 );
