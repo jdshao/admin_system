@@ -4,3 +4,6 @@ login:
 main:
     path:     /main
     defaults: { controller: 'MainController', action: 'indexAction' }
+index:
+    path:     /
+    defaults: { controller: 'MainController', action: 'indexAction' }

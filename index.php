@@ -8,11 +8,15 @@ define("ROUTER", BASE_PATH.'/router/');
 // 第三方路径
 define("Common", BASE_PATH.'/common/');
 // 通用类配置
-define("LIBRARY", BASE_PATH.'/library');
+define("LIBRARY", BASE_PATH.'/library/');
 // 控制器空间
-define("Controller", BASE_PATH.'/controller');
+define("Controller", BASE_PATH.'/controller/');
 // 数据访问层
-define("Model", BASE_PATH.'/model');
+define("Model", BASE_PATH.'/model/');
+// 实例 Entity 路径
+define("Entity", Model.'/Entity/');
+// 配置文件
+define("Config", BASE_PATH.'/config/');
 
 // composer autoload自动载入类
 require BASE_PATH.'/vendor/autoload.php';
@@ -29,7 +33,7 @@ $request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
 $reqURI = $request->getRequestUri();
 
 // 加载控制器装载类
-require LIBRARY . '/' . 'Loader.php';
+require LIBRARY . 'Loader.php';
 try {
     $routeInfo = $matcher->match($reqURI);
     $controller = $routeInfo['controller'];
