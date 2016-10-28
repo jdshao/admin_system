@@ -6,8 +6,6 @@
  * Time: 10:10
  */
 
-//require COMMON . 'smarty/libs/Smarty.class.php';
-
 class SmartyLibrary extends Smarty
 {
     public function __construct()

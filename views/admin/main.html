@@ -5,48 +5,52 @@
     <{include '../_header.html'}>
     <script type="text/javascript">
         $(function(){
+
+            // 获取当前用户的菜单列表
+            $.ajax({
+                type : "POST",
+                url : "/menu",
+                cache : false,
+                dataType : json,
+                success: function(data) {
+                    if (data.status != 1) {
+                        $("#error").window('open');
+                    } else {
+                        // initiate tree
+                        $("#tree").tree({
+                            data:data.treeData,
+                            lines:true,
+                            onClick: function(node){
+                                if (node.attributes) {
+                                    openTab(node.text, node.attributes.url);
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+
             // 数据
             var treeData = [{
-                text:"操作菜单",
+                text:"菜单管理",
                 children: [
                     {
-                        text:"班级信息管理",
+                        text:"菜单列表",
                         attributes: {
-                            url:"gradeInfoManage.jsp"
-                        }
-                    },
-                    {
-                        text:"学生信息管理",
-                        attributes: {
-                            url:"studentInfoManage.jsp"
+                            url:"/menulist"
                         }
                     }]
             },{
-                text:"操作菜单",
-                        children: [
+                text:"用户管理",
+                children: [
                     {
-                        text:"班级信息管理1",
+                        text:"用户管理",
                         attributes: {
-                            url:"gradeInfoManage.jsp"
-                        }
-                    },
-                    {
-                        text:"学生信息管理",
-                        attributes: {
-                            url:"studentInfoManage.jsp"
+                            url:"/usermanage"
                         }
                     }]
             }]
 
-            $("#tree").tree({
-                data:treeData,
-                lines:true,
-                onClick: function(node){
-                    if (node.attributes) {
-                        openTab(node.text, node.attributes.url);
-                    }
-                }
-            });
         });
     </script>
 </head>
@@ -62,6 +66,9 @@
             <div title="首页">
                 <div align="center" style="padding-top: 100px;"><font color="red" size="10">欢迎使用</font></div>
             </div>
+        </div>
+        <div id="error" class="easyui-window" title="网络异常" closed="true" style="width:300px;height:100px;padding:5px;">
+            <span class="content">异常</span>
         </div>
     </div>
     <div region="west" style="width: 200px;" title="导航菜单" split="true">
