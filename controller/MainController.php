@@ -7,7 +7,6 @@
  * Time: 15:15
  */
 
-
 class MainController extends BaseController
 {
     public function loginAction(\Symfony\Component\HttpFoundation\Request $request)
@@ -19,7 +18,6 @@ class MainController extends BaseController
         }
 
         $adminUserModel = new AdminUserModel();
-
 
         $this->smarty->display("login.html");
     }
@@ -33,4 +31,15 @@ class MainController extends BaseController
         $this->smarty->display("admin/main.html");
     }
 
+    /**
+     * 获取菜单列表json串
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param \Symfony\Component\HttpFoundation\Response $response
+     */
+    public function menuAction(\Symfony\Component\HttpFoundation\Request $request)
+    {
+        $menuModel = new MenuModel();var_dump($menuModel);exit;
+        $menuList = $menuModel->getAllMueuItem();
+
+    }
 }

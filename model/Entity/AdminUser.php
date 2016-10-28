@@ -7,35 +7,42 @@
  */
 
 /**
- * @Entity @Table(name="admin_user")
+ * 用户表
+ * @Entity
+ * @Table(name="admin_user")
+ * @GeneratedValue(strategy="AUTO")
  **/
 class AdminUser {
 
     /**
-     * @Id @Column(type="integer")
-     * @GeneratedValue
+     * @Id
+     * @Column(type="integer")
      **/
     protected $id ;
     /**
-     * @Column(type="string")
+     * @Column(name="name", type="string", nullable=false, options={"comment"="用户名"})
      **/
     protected $name;
-
     /**
-     * @return mixed
+     * @Column(name="password", type="string", nullable=false, options={"comment"="密码"})
      */
-    public function getName()
-    {
-        return $this->name;
-    }
-
+    protected $password;
     /**
-     * @param mixed $name
+     * @Column(name="telephone", type="integer", options={"comment"="电话"})
      */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
+    protected $telephone;
+    /**
+     * @Column(name="mail", type="string", options={"comment"="邮箱"})
+     */
+    protected $mail;
+    /**
+     * @Column(name="regist_time", type="datetime", options={"comment"="注册时间"})
+     */
+    protected $registTime;
+    /**
+     * @Column(name="last_login", type="datetime", options={"comment"="上次登录时间"})
+     */
+    protected $lastLogin;
 
     /**
      * @return mixed
@@ -55,5 +62,112 @@ class AdminUser {
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param mixed $name
+     * @return AdminUser
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    /**
+     * @param mixed $password
+     * @return AdminUser
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTelephone()
+    {
+        return $this->telephone;
+    }
+
+    /**
+     * @param mixed $telephone
+     * @return AdminUser
+     */
+    public function setTelephone($telephone)
+    {
+        $this->telephone = $telephone;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMail()
+    {
+        return $this->mail;
+    }
+
+    /**
+     * @param mixed $mail
+     * @return AdminUser
+     */
+    public function setMail($mail)
+    {
+        $this->mail = $mail;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRegistTime()
+    {
+        return $this->registTime;
+    }
+
+    /**
+     * @param mixed $registTime
+     * @return AdminUser
+     */
+    public function setRegistTime($registTime)
+    {
+        $this->registTime = $registTime;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastLogin()
+    {
+        return $this->lastLogin;
+    }
+
+    /**
+     * @param mixed $lastLogin
+     * @return AdminUser
+     */
+    public function setLastLogin($lastLogin)
+    {
+        $this->lastLogin = $lastLogin;
+        return $this;
+    }
 
 }

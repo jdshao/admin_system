@@ -1,9 +1,12 @@
+index:
+    path:     /
+    defaults: { controller: 'MainController', action: 'indexAction' }
 login:
     path:     /login
     defaults : {controller: 'MainController', action: 'loginAction'}
 main:
     path:     /main
     defaults: { controller: 'MainController', action: 'indexAction' }
-index:
-    path:     /
-    defaults: { controller: 'MainController', action: 'indexAction' }
+menu:
+    path:     /menu
+    defaults: { controller: 'MainController', action: 'menuAction' }

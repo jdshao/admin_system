@@ -7,41 +7,47 @@
  */
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
+use Doctrine\Common\ClassLoader;
 
 
 class BaseModel
 {
-    // entity ¹ÜÀíÊµÀý
+    // entity ç®¡ç†å®žä¾‹
     protected $entityManager ;
-    // doctrine ÉèÖÃ
+    // doctrine è®¾ç½®
     protected $isDevMode = true;
-    // Êý¾Ý¿âÅäÖÃ
+    // æ•°æ®åº“é…ç½®
     private $dbParams ;
 
     /**
-     * @param string $entityClass // Ä¬ÈÏÎªAdminUserÀà
+     * @param string $entityClass // é»˜è®¤ä¸ºAdminUserç±»
      * @throws \Doctrine\ORM\ORMException
      */
     public function __construct( $entityClass = 'AdminUser' )
     {
-        $entityPath = array( Entity . $entityClass . '.php');
+        $entityPath = array( Entity );
         $this->dbParams = array(
                                 'driver'   => 'pdo_mysql',
+                                'host'     => '127.0.0.1',
+                                'port'     => '3306',
                                 'user'     => $_SERVER['DATABASE_USER'],
                                 'password' => $_SERVER['DATABASE_PASSWORD'],
                                 'dbname'   => 'admin_system',
                             );
         $config = Setup::createYAMLMetadataConfiguration($entityPath, $this->isDevMode);
         $this->entityManager = EntityManager::create($this->dbParams, $config);
+
+        $cl = new ClassLoader('', Entity);var_dump($cl);exit;
+        $cl->register();
     }
 
     /**
-     * @param null $entityClass // ¸ü»»²Ù×÷ÊµÀý
+     * @param null $entityClass // æ›´æ¢æ“ä½œå®žä¾‹
      * @return EntityManager
      * @throws \Doctrine\ORM\ORMException
      */
     public function getEntityManager( $entityClass = null ) {
-        // ÊÇ·ñ¸ü»»Êý¾Ý¿âÊµÀý ²»Îª¿ÕµÄÊ±ºò
+        // æ˜¯å¦æ›´æ¢æ•°æ®åº“å®žä¾‹ ä¸ä¸ºç©ºçš„æ—¶å€™
         if ( $entityClass != null ) {
             $entityPath = array( Entity . $entityClass . '.php');
             $config = Setup::createYAMLMetadataConfiguration($entityPath, $this->isDevMode);

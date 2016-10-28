@@ -10,8 +10,10 @@ class AdminUserModel extends BaseModel
 {
     public function __construct()
     {
-        // ¼ÓÔØ¸¸Àà¹¹Ôìº¯Êı
+        // åŠ è½½çˆ¶ç±»æ„é€ å‡½æ•°
         parent::__construct();
     }
+
+
 }
 

@@ -18,7 +18,7 @@ define("Entity", __DIR__.'/model/Entity');
 
 // 获取命令行输入的参数  $argv[0]
 $paths = array( Entity );
-$isDevMode = false;
+$isDevMode = true;
 
 // the connection configuration
 $dbParams = array(

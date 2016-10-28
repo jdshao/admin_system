@@ -14,14 +14,14 @@ define("Controller", BASE_PATH.'/controller/');
 // 数据访问层
 define("Model", BASE_PATH.'/model/');
 // 实例 Entity 路径
-define("Entity", Model.'/Entity/');
+define("Entity", BASE_PATH.'/model/Entity');
 // 配置文件
 define("Config", BASE_PATH.'/config/');
 
 // composer autoload自动载入类
 require BASE_PATH.'/vendor/autoload.php';
 
-// 加载配置文件
+// 加载路由配置文件
 $locater = new \Symfony\Component\Config\FileLocator(array(ROUTER));
 $loader = new \Symfony\Component\Routing\Loader\YamlFileLoader($locater);
 $collection = $loader->load('routing.yml');

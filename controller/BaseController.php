@@ -8,7 +8,7 @@
 
 class BaseController
 {
-    // smartyÊµÀý
+    // smartyå®žä¾‹
     protected $smarty;
 
     public function __construct()
