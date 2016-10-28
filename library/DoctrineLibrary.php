@@ -35,9 +35,15 @@ class DoctrineLibrary
         // With this configuration, your model files need to be in application/models/Entity
         // e.g. Creating a new Entity\User loads the class from application/models/Entity/User.php
         $models_namespace = 'Entity';
+<<<<<<< HEAD
         $models_path = APPPATH . 'models';
         $proxies_dir = APPPATH . 'models/Proxies';
         $metadata_paths = array(APPPATH . 'models/Entity');
+=======
+        $models_path = Model;
+        $proxies_dir = Model . 'Proxies';
+        $metadata_paths = array(Model . 'Entity');
+>>>>>>> eb79ce4c6a795f7f03e6c4aec040e927808a2d90
 
         // Set $dev_mode to TRUE to disable caching while you develop
         $dev_mode = true;
