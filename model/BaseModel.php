@@ -7,7 +7,7 @@
  */
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
-use Doctrine\Common\ClassLoader;
+use Doctrine\ORM\Mapping\Driver;
 
 
 class BaseModel
@@ -34,11 +34,21 @@ class BaseModel
                                 'password' => $_SERVER['DATABASE_PASSWORD'],
                                 'dbname'   => 'admin_system',
                             );
+
+        $classLoader = new \Doctrine\Common\ClassLoader('Entity', Entity);
+        $classLoader->register();
+
+        $driver = new Doctrine\ORM\Mapping\Driver\AnnotationDriver(new Doctrine\Common\Annotations\AnnotationReader(), $entityPath);
+
         $config = Setup::createYAMLMetadataConfiguration($entityPath, $this->isDevMode);
+        $config->setMetadataDriverImpl($driver);
         $this->entityManager = EntityManager::create($this->dbParams, $config);
 
-        $cl = new ClassLoader('', Entity);var_dump($cl);exit;
-        $cl->register();
+        require_once Entity."/AdminUser.php";
+        $productRepository = $this->entityManager->getRepository("AdminUser");
+        $products = $productRepository->findAll();
+        var_dump($products[0]->getName());exit;
+
     }
 
     /**

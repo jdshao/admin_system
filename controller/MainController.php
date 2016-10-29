@@ -38,8 +38,8 @@ class MainController extends BaseController
      */
     public function menuAction(\Symfony\Component\HttpFoundation\Request $request)
     {
-        $menuModel = new MenuModel();var_dump($menuModel);exit;
-        $menuList = $menuModel->getAllMueuItem();
+        $menuModel = new MenuModel();
+        $menuList = $menuModel->getAllMueuItem();var_dump($menuList);exit;
 
     }
 }

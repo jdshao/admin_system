@@ -8,10 +8,14 @@
 
 class MenuModel extends BaseModel
 {
+    // 内如
+    private $menuRepo ;
+
     public function __construct()
     {
         // 加载父类构造函数
         parent::__construct();
+
     }
 
     /**
@@ -19,7 +23,10 @@ class MenuModel extends BaseModel
      */
     function getAllMueuItem()
     {
+        require_once Entity."/AdminUser.php";
+        $menuRepo = $this->entityManager->getRepository('AdminUser');var_dump(12123);exit;
+        $products = $menuRepo->findAll();
 
-        var_dump(count($products));
+        var_dump(count($products));exit;
     }
 }

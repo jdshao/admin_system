@@ -6,41 +6,42 @@
  * Time: 23:21
  */
 
+
+use Doctrine\ORM\Mapping as ORM;
 /**
  * 用户表
- * @Entity
- * @Table(name="admin_user")
- * @GeneratedValue(strategy="AUTO")
+ * @ORM\Entity
+ * @ORM\Table(name="admin_user")
  **/
 class AdminUser {
 
     /**
-     * @Id
-     * @Column(type="integer")
+     * @ORM\Id
+     * @ORM\Column(type="integer")
      **/
     protected $id ;
     /**
-     * @Column(name="name", type="string", nullable=false, options={"comment"="用户名"})
+     * @ORM\Column(name="name", type="string", nullable=false, options={"comment"="用户名"})
      **/
     protected $name;
     /**
-     * @Column(name="password", type="string", nullable=false, options={"comment"="密码"})
+     * @ORM\Column(name="password", type="string", nullable=false, options={"comment"="密码"})
      */
     protected $password;
     /**
-     * @Column(name="telephone", type="integer", options={"comment"="电话"})
+     * @ORM\Column(name="telephone", type="integer", options={"comment"="电话"})
      */
     protected $telephone;
     /**
-     * @Column(name="mail", type="string", options={"comment"="邮箱"})
+     * @ORM\Column(name="mail", type="string", options={"comment"="邮箱"})
      */
     protected $mail;
     /**
-     * @Column(name="regist_time", type="datetime", options={"comment"="注册时间"})
+     * @ORM\Column(name="regist_time", type="datetime", options={"comment"="注册时间"})
      */
     protected $registTime;
     /**
-     * @Column(name="last_login", type="datetime", options={"comment"="上次登录时间"})
+     * @ORM\Column(name="last_login", type="datetime", options={"comment"="上次登录时间"})
      */
     protected $lastLogin;
 

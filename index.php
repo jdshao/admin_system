@@ -34,6 +34,7 @@ $reqURI = $request->getRequestUri();
 
 // 加载控制器装载类
 require LIBRARY . 'Loader.php';
+// 没有相应的页面则抛出异常
 try {
     $routeInfo = $matcher->match($reqURI);
     $controller = $routeInfo['controller'];
