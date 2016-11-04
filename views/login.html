@@ -2,45 +2,100 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>后台权限管理系统</title>
+    <{include '_header.html'}>
     <script type="text/javascript">
+        // 重置
         function resetVal() {
-            document.getElementById("userName").value="";
-            document.getElementById("userPasswd").value="";
+            $("#userName").value="";
+            $("#userPasswd").value="";
+        }
+
+        // 重新加载验证码
+        function reloadCode()
+        {
+            $("#codeImg").attr('src', '/getValidCode?t=' + Math.random());
+        }
+
+        // 提交登录信息
+        function login()
+        {
+            var userName = $("#userName").val();
+            if (!userName) {
+                $.messager.alert("系统消息", "请输入用户名!");
+                return;
+            }
+            var userPasswd = $("#userPasswd").val();
+            if (!userPasswd) {
+                $.messager.alert("系统消息", "请输入用户密码!");
+                return;
+            }
+            var validCode = $("#validCode").val();
+            if (!validCode) {
+                $.messager.alert("系统消息", "请输入验证码!");
+                return;
+            }
+
+            $.ajax({
+                type : "POST",
+                url : "/login",
+                data : {
+                    userName : userName,
+                    userPasswd : userPasswd,
+                    validCode : validCode
+                },
+                dataType: "json",
+                success:function(json){
+                    if (json.success != 1) {
+                        $.messager.alert("系统消息", json.errMsg);
+                    } else {
+                        location.href = "/main";
+                    }
+                }
+            });
         }
     </script>
 </head>
 <body>
 <div align="center" style="padding-bottom: 200px;padding-top: 150px;background-image: url('/images/abg.gif');background-size:cover;">
-    <form action="login" method="post">
+    <form id="loginForm" action="/login" method="post">
         <table width="351" height="196" background="/images/login.jpg">
-            <tr height="35">
+            <tr height="28">
                 <td colspan="4"></td>
             </tr>
-            <tr height="10">
-                <td width="30%"></td>
+            <tr height="15">
+                <td width="25%"></td>
                 <td width="25%">用户名:</td>
                 <td><input type="text" value="" name="userName" id="userName" /></td>
                 <td width="30%"></td>
             </tr>
-            <tr height="10">
-                <td width="30%"></td>
+            <tr height="15">
+                <td width="25%"></td>
                 <td width="25%">密码:</td>
                 <td><input type="password" value="" name="userPasswd" id="userPasswd" /></td>
                 <td width="30%"></td>
             </tr>
+            <tr height="15">
+                <td width="25%"></td>
+                <td width="15%">验证码:</td>
+                <td width="15%">
+                    <input style="width: 55px;" type="text" value="" name="validCode" id="validCode" />
+                    <img id="codeImg" src="/getValidCode" onclick="reloadCode()">
+                </td>
+                <td width="25%"></td>
+            </tr>
             <tr height="10">
-                <td width="30%"></td>
+                <td width="25%"></td>
                 <td width="25%"><input type="button" value="重置" onclick="resetVal()" /></td>
-                <td><input type="submit" value="登录"/></td>
+                <td><input type="button" value="登录" onclick="login()"/></td>
                 <td width="30%"></td>
             </tr>
-            <tr height="30">
+            <tr height="20">
                 <td width="10%"></td>
                 <td colspan="5" valign="top">
-                    <font color="red">${error}</font>
+                    <font color="red"><{$error}></font>
                 </td>
             </tr>
-    </table>
+        </table>
     </form>
 </div>
 </body>

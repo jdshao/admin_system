@@ -12,10 +12,14 @@ class ExceptionController extends BaseController
     {
         parent::__construct();
     }
-  
-    public function showError ($errInfo)
+
+    /**
+     * 展示异常页面
+     * @param string $errInfo  // 错误信息
+     */
+    public function showError ($errInfo = "oops! internal fatal error")
     {
-        $this->smarty->assign('info', 123123);
+        $this->smarty->assign('info', $errInfo);
         $this->smarty->display('exception/errInfo.html');
     }
 }

@@ -1,0 +1,150 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>菜单管理</title>
+    <{include '../_header.html'}>
+    <script type="application/javascript">
+        // 修改用户权限
+        function userEdit()
+        {
+            // 获取所有选中项
+            var selectedRows = $("#itemList").datagrid('getSelections');
+            if (selectedRows.length == 0) {
+                $.messager.alert("系统提示", "请选择要编辑的菜单元素");
+                return;
+            } else if(selectedRows.length > 1) {
+                $.messager.alert("系统提示", "请选择单个菜单元素");
+                return;
+            }
+            var userId = selectedRows[0].id;
+            // 获取用户id对应复选菜单
+            $.ajax({
+                type : "POST",
+                url : "/getMenuCheckTree",
+                data : { userId : userId },
+                dataType: "json",
+                success:function(json){
+                    if (json.success == -1) {
+                        $.messager.alert("系统提示", "用户不存在");
+                    } else if (json.success == 0) {
+                        $.messager.alert("系统提示", "获取复选框树失败");
+                    } else {
+                        $("#checkItems").tree({
+                            data : json.data,
+                            lines:true
+                        });
+                    }
+                }
+            });
+            $("#userEdit").dialog("open").dialog("setTitle", "用户编辑");
+        }
+
+        function saveUser()
+        {
+            // 获取操作用户Userid
+            var selectedRows = $("#itemList").datagrid('getSelections');
+            var userId = selectedRows[0].id;
+
+            // 获取选择的权限id
+            var checkItems = $('#checkItems').tree('getChecked');
+            var itemIds = "";
+            for (i = 0; i < checkItems.length; i++) {
+                itemIds += checkItems[i].id + ",";
+            }
+            itemIds = itemIds.substring(0, itemIds.length - 1);
+
+            // 获取用户状态
+            var state = $('#state').combobox('getValue');
+            if (!state) {
+                $.messager.alert("系统提示", "请选择用户状态");
+                return;
+            }
+
+            $.ajax({
+                type : "POST",
+                url : "/doSaveUser",
+                data : {
+                    userId : userId,
+                    itemIds : itemIds,
+                    state : state
+                },
+                dataType: "json",
+                success:function(json){
+                    if (json.success == 1) {
+                        $.messager.alert("系统提示", "修改成功");
+                    } else {
+                        $.messager.alert("系统提示", "修改失败");
+                    }
+                }
+            });
+        }
+
+        // 删除用户
+        function userDelete()
+        {
+
+        }
+
+        // 关闭弹框
+        function closeDialog()
+        {
+            $("#userEdit").dialog("close");
+        }
+    </script>
+</head>
+<body>
+    <!-- 显示表格 -->
+    <!-- toolbar 选项指定工具栏 -->
+    <table id="itemList" title="用户权限列表" class="easyui-datagrid" fitColumns="true" pagination="true" rownumbers="true" url="/getUserPerm" toolbar="#toolbar" >
+        <thead>
+        <tr align="center">
+            <th checkbox="true" field="cb"></th>
+            <th width="10%" field="id" align="center">编号</th>
+            <th width="20%" field="name" align="center">用户名称</th>
+            <th width="20%" field="state" align="center">用户状态</th>
+            <th width="50%" field="menu" align="center">可用菜单</th>
+        </tr>
+        </thead>
+    </table>
+    <!-- 表格工具栏 -->
+    <div id="toolbar">
+        <div>
+            <a href="javascript:userEdit()" class="easyui-linkbutton" iconcls="icon-edit" plain="true">修改用户权限</a>
+            <a href="javascript:userDelete()" class="easyui-linkbutton" iconcls="icon-remove" plain="true">删除用户</a>
+        </div>
+    </div>
+
+    <!-- 编辑对话框 -->
+    <!-- buttons 指定对话框按钮 -->
+    <div id="userEdit" class="easyui-dialog" style="width: 480px; height : 390px;" closed="true" modal="true" buttons="#dlg-buttons">
+        <form id="editUserForm" method="post" action="/doSaveUser">
+            <table cellspacing="5px;" align="left" style="table-layout:fixed;">
+                <tr>
+                    <td>可使用菜单:</td>
+                    <td>
+                        <ul id="checkItems" class="easyui-tree" closed="true" checkbox="true">  <!--url="/getMenuCheckTree" 其中元素可以直接加载 -->
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td>用户状态:</td>
+                    <td>
+                        <select class="easyui-combobox" id="state" name="state" editable="false" panelHeight="auto">
+                            <option value="">请选择</option>
+                            <option value="1">待审核</option>
+                            <option value="2">已激活</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <!-- 对话框按钮 -->
+    <div id="dlg-buttons">
+        <a href="javascript:saveUser()" class="easyui-linkbutton" iconCls="icon-ok">保存</a>
+        <a href="javascript:closeDialog()" class="easyui-linkbutton" iconCls="icon-cancel">关闭</a>
+    </div>
+
+</body>
+</html>

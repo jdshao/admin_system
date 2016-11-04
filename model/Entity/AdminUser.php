@@ -18,6 +18,7 @@ class AdminUser {
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue
      **/
     protected $id ;
     /**
@@ -28,6 +29,14 @@ class AdminUser {
      * @ORM\Column(name="password", type="string", nullable=false, options={"comment"="密码"})
      */
     protected $password;
+    /**
+     * @ORM\Column(name="state", type="string", nullable=false, options={"default"=1,"comment"="用户状态 1待审核 2激活"})
+     */
+    protected $state;
+    /**
+     * @ORM\Column(name="permission_value", type="string", nullable=false, options={"comment"="权限值"})
+     */
+    protected $permissionValue;
     /**
      * @ORM\Column(name="telephone", type="integer", options={"comment"="电话"})
      */
@@ -96,6 +105,46 @@ class AdminUser {
     public function setPassword($password)
     {
         $this->password = $password;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPermissionValue()
+    {
+        return $this->permissionValue;
+    }
+
+    /**
+     * @param mixed $permissionValue
+     * @return AdminUser
+     */
+    public function setPermissionValue($permissionValue)
+    {
+        $this->permissionValue = $permissionValue;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getState()
+    {
+        if ($this->state == 1) {
+            return "待审核";
+        } else if ($this->state == 2) {
+            return "已激活";
+        }
+    }
+
+    /**
+     * @param mixed $state
+     * @return AdminUser
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
         return $this;
     }
 

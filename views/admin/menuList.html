@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>菜单管理</title>
+    <{include '../_header.html'}>
+    <script type="application/javascript">
+
+        // 添加菜单元素
+        function menuItemAdd() {
+            $("#itemEdit").dialog("open").dialog("setTitle", "添加菜单标签");
+        }
+
+        // 关闭对话框
+        function closeDialog() {
+            $("#itemEdit").dialog("close");
+            resetValue();
+        }
+
+        // 重置所有输入框
+        function resetValue() {
+            $("#name").val("");
+            $("#parent_id").combobox("setValue", "");
+            $("#url").val("");
+        }
+
+        // 保存新建菜单元素
+        function saveItem() {
+            $("#addItemForm").form("submit", {
+                url: "/doSaveItem",
+                success: function(data) {
+                    var result = jQuery.parseJSON(data);console.log(result);
+                    if (result.success == 0) {
+                        $.messager.alert("系统提示", result.errorMsg);
+                    } else if (result.success == 1) {
+                        $.messager.alert("系统提示", "保存成功");
+                        resetValue();
+                        $("#itemEdit").dialog("close");
+                        $("#itemList").datagrid("reload");
+                    }
+                }
+            });
+        }
+
+        // 删除元素
+        function menuItemDelete() {
+            // 获取所有选中项
+            var selectedRows = $("#itemList").datagrid('getSelections');
+            if (selectedRows.length == 0) {
+                $.messager.alert("系统提示", "请选择要删除的");
+                return;
+            }
+
+            var ids = "";
+            for (i = 0; i < selectedRows.length; i ++) {
+                ids += selectedRows[i].id +",";
+            }
+            ids = ids.substring(0, ids.length - 1);
+            $.messager.confirm("系统提示", "您确认要删除这<font color=red>"+ selectedRows.length + "</font>条数据吗", function(response){
+                if (response) {
+                    $.post(
+                            "/deleteItem",
+                            {delIds : ids},
+                            function(result) {
+                                if (result.delNums) {
+                                    $.messager.alert("系统提示", "成功删除"+ result.delNums + "条数据");
+                                    $("#itemList").datagrid("reload");
+                                    location.reload();
+                                } else {
+                                    $.messager.alert("系统提示", result.errorInfo);
+                                }
+                            },
+                            "json"
+                    );
+                }
+            });
+        }
+
+        // 修改标签
+        function menuItemEdit() {
+            $.messager.alert("系统提示", "菜单标签不支持修改");
+        }
+
+    </script>
+</head>
+<body>
+    <!-- 显示表格 -->
+    <!-- toolbar 选项指定工具栏 -->
+    <table id="itemList" title="菜单列表" class="easyui-datagrid" fitColumns="true" pagination="true" rownumbers="true" url="/getMenuList" toolbar="#toolbar" >
+        <thead>
+            <tr align="center">
+                <th checkbox="true" field="cb"></th>
+                <th width="10%" field="id" align="center">编号</th>
+                <th width="10%" field="name" align="center">菜单名称</th>
+                <th width="10%" field="permission_value" align="center">权限值</th>
+                <th width="25%" field="created_at" align="center">创建日期</th>
+                <th width="25%" field="updated_at" align="center">新建日期</th>
+                <th width="20%" field="modify_user" align="center">操作者</th>
+            </tr>
+        </thead>
+    </table>
+
+    <!-- 表格工具栏 -->
+    <div id="toolbar">
+        <div>
+            <a href="javascript:menuItemAdd()" class="easyui-linkbutton" iconcls="icon-add" plain="true">添加</a>
+            <a href="javascript:menuItemEdit()" class="easyui-linkbutton" iconcls="icon-edit" plain="true">修改</a>
+            <a href="javascript:menuItemDelete()" class="easyui-linkbutton" iconcls="icon-remove" plain="true">删除</a>
+        </div>
+    </div>
+
+    <!-- 编辑对话框 -->
+    <!-- buttons 指定对话框按钮 -->
+    <div id="itemEdit" class="easyui-dialog" style="width: 380px; height : 190px;" closed="true" modal="true" buttons="#dlg-buttons">
+        <form id="addItemForm" method="post" action="/doSaveItem">
+            <table cellspacing="5px;" align="left" style="table-layout:fixed;">
+                <tr>
+                    <td>菜单名称:</td>
+                    <td><input type="text" name="name" id="name" class="easyui-validatebox" required="true" /></td>
+                </tr>
+                <tr>
+                    <td>url:</td>
+                    <td align="center"><input type="text" name="url" id="url" class="easyui-validatebox" required="true" /></td>
+                </tr>
+                <tr>
+                    <td>父节点:</td>
+                    <td><input type="text" class="easyui-combobox" name="parent_id" id="parent_id" value="请选择" required="true" editable="false" data-options="editable:false, valueField:'id', textField:'name', url:'/getParentItem'" /></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <!-- 对话框按钮 -->
+    <div id="dlg-buttons">
+        <a href="javascript:saveItem()" class="easyui-linkbutton" iconCls="icon-ok">保存</a>
+        <a href="javascript:closeDialog()" class="easyui-linkbutton" iconCls="icon-cancel">关闭</a>
+    </div>
+
+</body>
+</html>

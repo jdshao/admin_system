@@ -36,7 +36,7 @@ $config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);
 $config->setMetadataDriverImpl($driver);
 $entityManager = EntityManager::create($dbParams, $config);
 
-require_once   __DIR__.'/model/Entity' .'/AdminUser.php';
+/*require_once   __DIR__.'/model/Entity' .'/AdminUser.php';
 $productRepository = $entityManager->getRepository("AdminUser");
 $products = $productRepository->findAll();
-var_dump($products[0]->getName());exit;
+var_dump($products[0]->getName());exit;*/

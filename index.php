@@ -1,4 +1,5 @@
 <?php
+session_start();
 // 框架入口文件
 define("BASE_PATH", __DIR__);
 // 模板路径
@@ -31,17 +32,27 @@ $context = new \Symfony\Component\Routing\RequestContext('/');
 $matcher = new \Symfony\Component\Routing\Matcher\UrlMatcher($collection, $context);
 $request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
 $reqURI = $request->getRequestUri();
+// 去除get参数
+if (strpos($reqURI, '?')) {
+    $reqURI = substr($reqURI, 0, strpos($reqURI, '?'));
+}
 
 // 加载控制器装载类
 require LIBRARY . 'Loader.php';
+
 // 没有相应的页面则抛出异常
 try {
     $routeInfo = $matcher->match($reqURI);
     $controller = $routeInfo['controller'];
     $action = $routeInfo['action'];
+
+    if (!in_array($action, array('loginAction', 'getValidCodeAction')) && !$_SESSION['userName']) {
+        throw new \Exception("未登录，不能访问该地址!");
+    }
+
     $conHandle = new $controller();
     $conHandle->$action($request);
-} catch (\RuntimeException $e) {
+} catch (\Exception $e) {
       $message = $e->getMessage();
       $excpController = new ExceptionController();
       $excpController->showError($message);

@@ -1,0 +1,18 @@
+menu:
+    path:     /menu
+    defaults: { controller: 'MainController', action: 'menuAction' }
+menuList:
+    path:     /menuList
+    defaults: { controller: 'MenuController', action: 'menuListAction' }
+getMenuList:
+    path:     /getMenuList
+    defaults: { controller: 'MenuController', action: 'getMenuListAction' }
+doSaveItem:
+    path:     /doSaveItem
+    defaults: { controller: 'MenuController', action: 'doSaveItemAction' }
+getParentItem:
+    path:     /getParentItem
+    defaults: { controller: 'MenuController', action: 'getParentItemAction' }
+deleteItem:
+    path:     /deleteItem
+    defaults: { controller: 'MenuController', action: 'deleteItemAction' }
