@@ -1,3 +1,4 @@
 library/smarty/compile/
 library/smarty/cache/
 .idea/
+php-cs.sh

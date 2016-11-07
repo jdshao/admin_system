@@ -4,11 +4,10 @@
  * Created by PhpStorm.
  * User: jdshao
  * Date: 2016/11/3
- * Time: 9:32
+ * Time: 9:32.
  */
 class PermController extends BaseController
 {
-
     private $userModel;
     private $menuModel;
 
@@ -20,15 +19,15 @@ class PermController extends BaseController
     }
 
     /**
-     * 显示所有用户权限
+     * 显示所有用户权限.
      */
     public function listPermAction()
     {
-        $this->smarty->display("admin/permList.html");
+        $this->smarty->display('admin/permList.html');
     }
 
     /**
-     * 获取所有用户的权限列表
+     * 获取所有用户的权限列表.
      */
     public function getUserPermAction()
     {
@@ -57,11 +56,11 @@ class PermController extends BaseController
     }
 
     /**
-     * 获取菜单复选框书
+     * 获取菜单复选框书.
      */
     public function getMenuCheckTreeAction(\Symfony\Component\HttpFoundation\Request $request)
     {
-        if ($request->getMethod() != "POST") {
+        if ($request->getMethod() != 'POST') {
             echo json_encode(array('success' => -1));
             exit;
         }
@@ -79,14 +78,15 @@ class PermController extends BaseController
             exit;
         }
         foreach ($menuList as $k => $menu) {
-            if(!isset($menu['children'])) {
-                if ($menu['permission_value'] | $user[0]->getPermissionValue()) {
+            if (!isset($menu['children'])) {
+                if ($menu['attributes']['permission_value'] & $user[0]->getPermissionValue()) {
                     $menuList[$k]['checked'] = true;
+                } else {
+                    $menuList[$k]['checked'] = false;
                 }
             }
         }
 
         echo json_encode(array('success' => 1, 'data' => $menuList));
     }
-
 }
